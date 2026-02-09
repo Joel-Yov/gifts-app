@@ -3,6 +3,12 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
+    //PODEMOS USAR EL PATH ALIAS PARA: core, shared, utils, services, pipes, directives y guards
+    "baseUrl": "./",
+    "paths": {
+      "@environments/*" : ["src/environments/*"],
+    },
+
     "strict": true,
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
