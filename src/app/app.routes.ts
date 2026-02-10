@@ -21,6 +21,10 @@ export const routes: Routes = [
                 loadComponent: () => import('./gifts/pages/search/search'),
             },
             {
+                path: 'friends',
+                loadComponent: () => import('./gifts/pages/friends/friends')
+            },
+            {
                 path: '**',
                 redirectTo: 'trending'
             }

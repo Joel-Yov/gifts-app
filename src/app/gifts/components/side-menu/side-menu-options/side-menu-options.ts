@@ -20,8 +20,14 @@ export class SidebarMenuOptions {
     {
       optionName: 'Buscador',
       optionDescription: 'Buscador gifts',
-      icono: 'fa-solid fa-magnifying-glas',
+      icono: 'fa-solid fa-magnifying-glass',
       ruta: '/dashboard/search'
     },
+    {
+      optionName: 'Friends',
+      optionDescription: 'Tu lista de amigos',
+      icono: 'fa-solid fa-user-group',
+      ruta: '/dashboard/friends'
+    }
   ];
 }
