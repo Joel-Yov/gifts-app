@@ -1,9 +1,10 @@
+import { GiphyResponse } from './../components/interfaces/giphy.interface';
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { environment } from '@environments/environment.development';
-import type { GiphyResponse } from '../components/interfaces/giphy.interface'; //USA type para decirle al compilador que solo es una interfaz
 import { Gif } from '../components/interfaces/gif.interface';
 import { GifMapper } from 'src/app/mapper/gif.mapper';
+import { map } from 'rxjs';
 
 @Injectable({ providedIn: 'root'})
 export class GifService {
@@ -12,10 +13,6 @@ export class GifService {
 
     trendingGifs = signal<Gif[]>([]);
     trendingGifsLoading = signal<boolean>(true);
-
-    searchGifs = signal<Gif[]>([]);
-    searchGifsLoading = signal<boolean>(true);
-
 
     constructor(){
         this.loadTrendingGifs();
@@ -40,20 +37,20 @@ export class GifService {
         })
     }
 
-    loadSearchGifs(query: string)
+    //THIS IS THE BEST WAY, BECAUSE THE SERVICE JUST GET THE DATA
+    //THE COMPONENT DECIDE TO DO WITH THAT (in this case: onSearch() search.ts)
+    searchGifs(query: string)
     {
-        this.http.get<GiphyResponse>(`${ environment.giphyUrl}/gifs/search`, {
+        return this.http.get<GiphyResponse>(`${environment.giphyUrl}/gifs/search`, {
             params: {
                 api_key: environment.apiKey,
                 limit: 20,
                 q: query
             }
-        }).subscribe((response) => {
-            const gifsBuscados = GifMapper.mapGiphyItemsToGifArray(response.data);
-            this.searchGifs.set(gifsBuscados);
-            this.searchGifsLoading.set(false);
-            console.log(`La palabra clave es ${query}`);
-            console.log(gifsBuscados);
-        })
+        }).pipe(
+            map(({data}) => (data)),
+            //Una vez recorrido toda la data de la respuesta de la API get, el sistema ya sabra que es un item, ANTES NO
+            map((items) => GifMapper.mapGiphyItemsToGifArray(items))
+        )
     }
 }
