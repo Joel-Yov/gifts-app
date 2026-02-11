@@ -37,7 +37,6 @@ export class GifService {
             //TAMBIEN VAMOS A LLENAR EL ARRAY DE trendingGifts gracias al mapeado que ya se hizo
             this.trendingGifs.set(gifs);
             this.trendingGifsLoading.set(false);
-            console.log(gifs);
         })
     }
 
@@ -53,6 +52,7 @@ export class GifService {
             const gifsBuscados = GifMapper.mapGiphyItemsToGifArray(response.data);
             this.searchGifs.set(gifsBuscados);
             this.searchGifsLoading.set(false);
+            console.log(`La palabra clave es ${query}`);
             console.log(gifsBuscados);
         })
     }
