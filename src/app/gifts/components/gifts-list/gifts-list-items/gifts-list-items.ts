@@ -7,6 +7,6 @@ import { Component, input } from '@angular/core';
 })
 export class GiftsListItems {
 
-  imageUrl = input<string>()
+  imageUrl = input.required<string>();
 
 }

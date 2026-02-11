@@ -10,7 +10,12 @@ export class GifService {
     //NO TE OLVIDES DE PROVEER EL HTTPCLIENTE EN EL app.config.ts
     private http = inject(HttpClient);
 
-    trendingGifts = signal<Gif[]>([])
+    trendingGifs = signal<Gif[]>([]);
+    trendingGifsLoading = signal<boolean>(true);
+
+    searchGifs = signal<Gif[]>([]);
+    searchGifsLoading = signal<boolean>(true);
+
 
     constructor(){
         this.loadTrendingGifs();
@@ -30,8 +35,25 @@ export class GifService {
             const gifs = GifMapper.mapGiphyItemsToGifArray(response.data);
 
             //TAMBIEN VAMOS A LLENAR EL ARRAY DE trendingGifts gracias al mapeado que ya se hizo
-            this.trendingGifts.set(gifs)
+            this.trendingGifs.set(gifs);
+            this.trendingGifsLoading.set(false);
             console.log(gifs);
+        })
+    }
+
+    loadSearchGifs(query: string)
+    {
+        this.http.get<GiphyResponse>(`${ environment.giphyUrl}/gifs/search`, {
+            params: {
+                api_key: environment.apiKey,
+                limit: 20,
+                q: query
+            }
+        }).subscribe((response) => {
+            const gifsBuscados = GifMapper.mapGiphyItemsToGifArray(response.data);
+            this.searchGifs.set(gifsBuscados);
+            this.searchGifsLoading.set(false);
+            console.log(gifsBuscados);
         })
     }
 }
