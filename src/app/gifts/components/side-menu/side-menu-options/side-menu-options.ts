@@ -29,6 +29,12 @@ export class SidebarMenuOptions {
       optionDescription: 'Tu lista de amigos',
       icono: 'fa-solid fa-user-group',
       ruta: '/dashboard/friends'
+    },
+    {
+      optionName: 'Rick and Morty',
+      optionDescription: 'Characters description',
+      icono: 'fa-solid fa-tv',
+      ruta: '/dashboard/ricky-morty'
     }
   ];
 

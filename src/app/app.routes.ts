@@ -30,6 +30,10 @@ export const routes: Routes = [
                 loadComponent: () => import('./gifts/pages/gif-history/gif-history')
             },
             {
+                path:'ricky-morty',
+                loadComponent: () => import('./gifts/pages/ricky-and-morty/ricky-and-morty')
+            },
+            {
                 path: '**',
                 redirectTo: 'trending'
             }

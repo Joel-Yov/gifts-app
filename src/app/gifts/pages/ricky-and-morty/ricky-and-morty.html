@@ -1,0 +1,21 @@
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-6">
+  @for (character of charactersRick(); track character.id) {
+    <div class="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden hover:-translate-y-2">
+      <div class="relative overflow-hidden">
+        <img 
+          src="{{ character.image }}" 
+          alt="{{ character.name }}" 
+          class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-300"
+        >
+        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+      </div>
+      <div class="p-4 space-y-2">
+        <h5 class="text-xl font-bold text-gray-800 truncate">{{ character.name }}</h5>
+        <p class="text-sm text-gray-500 flex items-center gap-2">
+          <span class="inline-block w-2 h-2 rounded-full bg-green-500"></span>
+          {{ character.species }}
+        </p>
+      </div>
+    </div>
+  }
+</div>
