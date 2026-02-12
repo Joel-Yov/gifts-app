@@ -25,6 +25,11 @@ export const routes: Routes = [
                 loadComponent: () => import('./gifts/pages/friends/friends')
             },
             {
+                //ATENZAO :v -> PARA URL dinamico ponemos lo que queremos recibir
+                path: 'history/:query',
+                loadComponent: () => import('./gifts/pages/gif-history/gif-history')
+            },
+            {
                 path: '**',
                 redirectTo: 'trending'
             }

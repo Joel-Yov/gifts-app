@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { GifService } from './../../../services/gifs.service';
+import { Component, inject } from '@angular/core';
 import { OptionsSidebar } from '../../interfaces/options-sidebar.interface';
 import { RouterLink, RouterLinkActive } from "@angular/router";
 
@@ -30,4 +31,6 @@ export class SidebarMenuOptions {
       ruta: '/dashboard/friends'
     }
   ];
+
+  gifService = inject(GifService);
 }

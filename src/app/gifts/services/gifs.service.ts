@@ -1,10 +1,16 @@
 import { GiphyResponse } from './../components/interfaces/giphy.interface';
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable, signal } from '@angular/core';
+import { computed, effect, inject, Injectable, signal } from '@angular/core';
 import { environment } from '@environments/environment.development';
 import { Gif } from '../components/interfaces/gif.interface';
 import { GifMapper } from 'src/app/mapper/gif.mapper';
-import { map } from 'rxjs';
+import { map, Observable, tap } from 'rxjs';
+
+const loadFromLocalStorage = () => 
+{
+    const gifsBuscados = localStorage.getItem('Gifsbuscados')
+    return gifsBuscados ? JSON.parse(gifsBuscados) : []
+}
 
 @Injectable({ providedIn: 'root'})
 export class GifService {
@@ -14,9 +20,18 @@ export class GifService {
     trendingGifs = signal<Gif[]>([]);
     trendingGifsLoading = signal<boolean>(true);
 
+    //Record es palabra reservada para tipar propio donde su objeto donde sus llaves son dinámicas 
+    searchHistory = signal<Record<string, Gif[]>>({})
+
+    //USAMOS EL Object.keys para obtener las llaves de mi objeto
+    searchHistoryKeys = computed(() => Object.keys(this.searchHistory()))
+
     constructor(){
         this.loadTrendingGifs();
+        this.searchHistory.set(loadFromLocalStorage())
     }
+
+    gifBuscados = loadFromLocalStorage();
 
     // UN OBSERVABLE DICE: UN OBJETO PUEDE ESTAR EMITIENDO VALORES, POR ESO SE USA PARA PESTAR PENDIENTES DE LO QUE LA PETICION HTTP RESUELVA
     loadTrendingGifs() 
@@ -39,7 +54,7 @@ export class GifService {
 
     //THIS IS THE BEST WAY, BECAUSE THE SERVICE JUST GET THE DATA
     //THE COMPONENT DECIDE TO DO WITH THAT (in this case: onSearch() search.ts)
-    searchGifs(query: string)
+    searchGifs(query: string): Observable<Gif[]>
     {
         return this.http.get<GiphyResponse>(`${environment.giphyUrl}/gifs/search`, {
             params: {
@@ -50,7 +65,29 @@ export class GifService {
         }).pipe(
             map(({data}) => (data)),
             //Una vez recorrido toda la data de la respuesta de la API get, el sistema ya sabra que es un item, ANTES NO
-            map((items) => GifMapper.mapGiphyItemsToGifArray(items))
+            map((items) => GifMapper.mapGiphyItemsToGifArray(items)),
+
+            //USAMOS TAP PARA MANEJAR EFECTOS SECUNDARIOS
+            tap((items) => {
+                console.log("Hola soy el historial de busqueda:");
+                console.log(this.searchHistory());
+                this.searchHistory.update((listaGifBuscado) => ({
+                    ...listaGifBuscado,
+                    [query.toLowerCase()]: items
+                }));
+                console.log(this.searchHistoryKeys());
+            })
+
         )
     }
+
+    getHistoryGifs(query: string) : Gif[]
+    {
+        return this.searchHistory()[query] ?? [];
+    }
+
+    saveToLocalStorage = effect(() => 
+    {
+        localStorage.setItem('Gifsbuscados', JSON.stringify(this.searchHistory()))
+    })
 }
